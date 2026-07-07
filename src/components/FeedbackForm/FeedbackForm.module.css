@@ -1,0 +1,105 @@
+/* FeedbackForm Component Styles */
+
+.feedbackCard {
+  @apply bg-white rounded-xl shadow-lg border border-slate-200 transition-all duration-200 relative overflow-hidden;
+}
+
+.feedbackCard.focused {
+  @apply shadow-xl border-blue-300 ring-4 ring-blue-100 transform scale-[1.02];
+}
+
+/* Data-entry card specific styling */
+.feedbackCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6, #3b82f6);
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.textarea {
+  @apply w-full px-4 py-3 border border-slate-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200;
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+.textarea:focus {
+  @apply shadow-sm;
+}
+
+.textarea:disabled {
+  @apply bg-slate-50 cursor-not-allowed;
+}
+
+.submitButton {
+  @apply px-6 py-3 rounded-lg font-medium transition-all duration-200 flex items-center justify-center min-w-[160px];
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.buttonEnabled {
+  @apply bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm hover:shadow-md;
+}
+
+.buttonEnabled:hover {
+  transform: translateY(-1px);
+}
+
+.buttonDisabled {
+  @apply bg-slate-300 text-slate-500 cursor-not-allowed;
+}
+
+/* Animation for focus effect */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.feedbackCard.focused::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 0.75rem;
+  background: linear-gradient(45deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+  animation: pulse 2s infinite;
+  pointer-events: none;
+}
+
+/* Character count warning styles */
+.characterWarning {
+  @apply text-yellow-600 font-medium;
+}
+
+.characterLimit {
+  @apply text-red-600 font-medium animate-pulse;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .feedbackCard {
+    @apply mx-4;
+  }
+  
+  .feedbackCard .p-8 {
+    @apply p-6;
+  }
+  
+  .submitButton {
+    @apply w-full;
+  }
+}
