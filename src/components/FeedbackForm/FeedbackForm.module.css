@@ -1,7 +1,7 @@
 /* FeedbackForm Component Styles */
 
 .feedbackCard {
-  @apply bg-white rounded-xl shadow-lg border border-slate-200 transition-all duration-200 relative overflow-hidden;
+  @apply bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 transition-all duration-200 relative overflow-hidden;
 }
 
 .feedbackCard.focused {
@@ -27,7 +27,7 @@
 }
 
 .textarea {
-  @apply w-full px-4 py-3 border border-slate-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200;
+  @apply w-full px-4 py-3 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200;
   font-family: 'Inter', system-ui, sans-serif;
   line-height: 1.5;
 }
@@ -37,7 +37,7 @@
 }
 
 .textarea:disabled {
-  @apply bg-slate-50 cursor-not-allowed;
+  @apply bg-slate-50 dark:bg-slate-800 cursor-not-allowed;
 }
 
 .submitButton {

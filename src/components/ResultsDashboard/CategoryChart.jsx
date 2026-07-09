@@ -64,7 +64,7 @@ const CategoryChart = React.memo(({ categoryData }) => {
   return (
     <div className="space-y-4">
       {categoryData.map((category, index) => (
-        <div key={category.id} className="bg-white p-4 rounded-lg border border-slate-200 hover:shadow-md transition-shadow duration-200">
+        <div key={category.id} className="bg-white dark:bg-slate-800 p-4 rounded-lg border border-slate-200 dark:border-slate-700 hover:shadow-md transition-shadow duration-200">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center space-x-3">
               <div className={`p-2 rounded-lg ${getCategoryColor(category.color).split(' ')[0]} bg-opacity-10`}>
@@ -73,19 +73,19 @@ const CategoryChart = React.memo(({ categoryData }) => {
                 </div>
               </div>
               <div>
-                <h4 className="font-semibold text-slate-900">{category.name}</h4>
-                <p className="text-sm text-slate-600">{category.description}</p>
+                <h4 className="font-semibold text-slate-900 dark:text-white">{category.name}</h4>
+                <p className="text-sm text-slate-600 dark:text-slate-400">{category.description}</p>
               </div>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-slate-900">{category.count}</div>
-              <div className="text-sm text-slate-600">{category.percentage}%</div>
+              <div className="text-2xl font-bold text-slate-900 dark:text-white">{category.count}</div>
+              <div className="text-sm text-slate-600 dark:text-slate-400">{category.percentage}%</div>
             </div>
           </div>
           
           {/* Horizontal Bar Chart */}
           <div className="relative">
-            <div className="w-full bg-gray-200 rounded-full h-8 shadow-inner">
+            <div className="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-8 shadow-inner">
               <div 
                 className={`${getBarColor(category.color)} h-8 rounded-full transition-all duration-700 ease-out flex items-center justify-end pr-3 shadow-sm relative overflow-hidden`}
                 style={{ width: `${category.percentage}%` }}
@@ -102,7 +102,7 @@ const CategoryChart = React.memo(({ categoryData }) => {
             
             {/* Percentage labels for small bars */}
             {category.percentage <= 10 && (
-              <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-sm text-slate-600 font-medium">
+              <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-sm text-slate-600 dark:text-slate-300 font-medium">
                 {category.percentage}%
               </span>
             )}
@@ -111,30 +111,30 @@ const CategoryChart = React.memo(({ categoryData }) => {
       ))}
 
       {/* Summary Statistics */}
-      <div className="mt-6 p-4 bg-slate-50 rounded-lg border border-slate-200">
-        <h4 className="font-semibold text-slate-900 mb-3">Category Summary</h4>
+      <div className="mt-6 p-4 bg-slate-50 dark:bg-slate-800/60 rounded-lg border border-slate-200 dark:border-slate-700">
+        <h4 className="font-semibold text-slate-900 dark:text-white mb-3">Category Summary</h4>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="text-center">
-            <div className="text-2xl font-bold text-slate-900">{categoryData.length}</div>
-            <div className="text-sm text-slate-600">Categories</div>
+            <div className="text-2xl font-bold text-slate-900 dark:text-white">{categoryData.length}</div>
+            <div className="text-sm text-slate-600 dark:text-slate-400">Categories</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-slate-900">
+            <div className="text-2xl font-bold text-slate-900 dark:text-white">
               {categoryData.reduce((sum, cat) => sum + cat.count, 0)}
             </div>
-            <div className="text-sm text-slate-600">Total Issues</div>
+            <div className="text-sm text-slate-600 dark:text-slate-400">Total Issues</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-slate-900">
+            <div className="text-2xl font-bold text-slate-900 dark:text-white">
               {Math.max(...categoryData.map(cat => cat.count))}
             </div>
-            <div className="text-sm text-slate-600">Peak Count</div>
+            <div className="text-sm text-slate-600 dark:text-slate-400">Peak Count</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-slate-900">
+            <div className="text-2xl font-bold text-slate-900 dark:text-white">
               {Math.round(categoryData.reduce((sum, cat) => sum + cat.count, 0) / categoryData.length)}
             </div>
-            <div className="text-sm text-slate-600">Average</div>
+            <div className="text-sm text-slate-600 dark:text-slate-400">Average</div>
           </div>
         </div>
       </div>

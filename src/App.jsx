@@ -6,6 +6,7 @@ import FeedbackForm from './components/FeedbackForm/FeedbackForm.jsx';
 import ResultsDashboard from './components/ResultsDashboard/ResultsDashboard.jsx';
 import LoadingSpinner from './components/LoadingSpinner/LoadingSpinner.jsx';
 import ErrorBoundary from './components/ErrorBoundary.jsx';
+import { ThemeProvider } from './context/ThemeContext.jsx';
 import './styles/globals.css';
 
 /**
@@ -39,15 +40,15 @@ function App() {
   const renderContent = () => {
     if (isLoading) {
       return (
-        <div className="flex items-center justify-center min-h-screen bg-slate-50/50">
-          <div className="bg-white rounded-xl shadow-xl p-8 max-w-md w-full mx-4">
+        <div className="flex items-center justify-center min-h-screen bg-slate-50/50 dark:bg-slate-950/50">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl p-8 max-w-md w-full mx-4">
             <LoadingSpinner 
               message="Analyzing feedback..."
               size="large"
               color="blue"
             />
             <div className="mt-6 text-center">
-              <p className="text-sm text-slate-600 mb-2">
+              <p className="text-sm text-slate-600 dark:text-slate-300 mb-2">
                 Processing your feedback to generate insights...
               </p>
               <div className="flex justify-center space-x-2">
@@ -90,17 +91,19 @@ function App() {
   };
 
   return (
-    <ErrorBoundary>
-      <div className="min-h-screen bg-slate-50">
-        <Layout>
-          <div className="flex-1">
-            <ErrorBoundary>
-              {renderContent()}
-            </ErrorBoundary>
-          </div>
-        </Layout>
-      </div>
-    </ErrorBoundary>
+    <ThemeProvider>
+      <ErrorBoundary>
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+          <Layout>
+            <div className="flex-1">
+              <ErrorBoundary>
+                {renderContent()}
+              </ErrorBoundary>
+            </div>
+          </Layout>
+        </div>
+      </ErrorBoundary>
+    </ThemeProvider>
   );
 }
 

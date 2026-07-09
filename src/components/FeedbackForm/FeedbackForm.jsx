@@ -54,10 +54,10 @@ const FeedbackForm = ({ onSubmit, feedbackInput, onInputChange, disabled, error 
       <div className={`${styles.feedbackCard} ${isFocused ? styles.focused : ''}`}>
         <div className="p-8">
           <div className="mb-6">
-            <h1 className="text-2xl font-bold text-slate-900 mb-2">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
               Analyze User Feedback
             </h1>
-            <p className="text-slate-600">
+            <p className="text-slate-600 dark:text-slate-300">
               Paste user feedback below to generate sentiment analysis and categorize issues.
               Get insights in seconds to make data-driven product decisions.
             </p>
@@ -65,7 +65,7 @@ const FeedbackForm = ({ onSubmit, feedbackInput, onInputChange, disabled, error 
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="feedback" className="block text-sm font-medium text-slate-700 mb-2">
+              <label htmlFor="feedback" className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">
                 Feedback Text
               </label>
               <div className="relative">
@@ -91,7 +91,7 @@ const FeedbackForm = ({ onSubmit, feedbackInput, onInputChange, disabled, error 
                   <span className={`text-xs font-medium ${
                     isAtLimit ? 'text-red-600' : 
                     isNearLimit ? 'text-yellow-600' : 
-                    'text-slate-500'
+                    'text-slate-500 dark:text-slate-400'
                   }`}>
                     {characterCount} / {VALIDATION_RULES.MAX_FEEDBACK_LENGTH}
                   </span>
@@ -99,7 +99,7 @@ const FeedbackForm = ({ onSubmit, feedbackInput, onInputChange, disabled, error 
               </div>
               
               {/* Help text */}
-              <p id="feedback-help" className="mt-2 text-sm text-slate-500">
+              <p id="feedback-help" className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                 Enter at least {VALIDATION_RULES.MIN_FEEDBACK_LENGTH} characters for accurate analysis.
               </p>
               
@@ -117,7 +117,7 @@ const FeedbackForm = ({ onSubmit, feedbackInput, onInputChange, disabled, error 
             </div>
 
             <div className="flex items-center justify-between">
-              <div className="text-sm text-slate-500">
+              <div className="text-sm text-slate-500 dark:text-slate-400">
                 <p>
                   <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -153,9 +153,9 @@ const FeedbackForm = ({ onSubmit, feedbackInput, onInputChange, disabled, error 
           </form>
 
           {/* Quick tips */}
-          <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <h3 className="text-sm font-medium text-blue-900 mb-2">Quick Tips</h3>
-            <ul className="text-sm text-blue-700 space-y-1">
+          <div className="mt-8 p-4 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900 rounded-lg">
+            <h3 className="text-sm font-medium text-blue-900 dark:text-blue-200 mb-2">Quick Tips</h3>
+            <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
               <li>• Include specific details about user experiences</li>
               <li>• Paste multiple feedback items for comprehensive analysis</li>
               <li>• Include both positive and negative feedback for balance</li>
