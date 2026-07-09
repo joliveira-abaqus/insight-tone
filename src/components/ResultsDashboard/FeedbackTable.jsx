@@ -71,22 +71,22 @@ const FeedbackTable = React.memo(({ feedbackData }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
-      <div className="px-6 py-4 border-b border-slate-200">
-        <h3 className="text-lg font-semibold text-slate-900">Feedback Items</h3>
-        <p className="text-sm text-slate-600 mt-1">
+    <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+      <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Feedback Items</h3>
+        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
           {feedbackData.length} items analyzed • Click rows to expand full text
         </p>
       </div>
 
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-slate-50 border-b border-slate-200">
+          <thead className="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
             <tr>
               <th className="px-6 py-3 text-left">
                 <button
                   onClick={() => handleSort('sentiment')}
-                  className="text-xs font-medium text-slate-700 uppercase tracking-wider hover:text-slate-900 flex items-center"
+                  className="text-xs font-medium text-slate-700 dark:text-slate-300 uppercase tracking-wider hover:text-slate-900 dark:hover:text-white flex items-center"
                 >
                   Sentiment
                   <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -97,7 +97,7 @@ const FeedbackTable = React.memo(({ feedbackData }) => {
               <th className="px-6 py-3 text-left">
                 <button
                   onClick={() => handleSort('category')}
-                  className="text-xs font-medium text-slate-700 uppercase tracking-wider hover:text-slate-900 flex items-center"
+                  className="text-xs font-medium text-slate-700 dark:text-slate-300 uppercase tracking-wider hover:text-slate-900 dark:hover:text-white flex items-center"
                 >
                   Category
                   <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -108,7 +108,7 @@ const FeedbackTable = React.memo(({ feedbackData }) => {
               <th className="px-6 py-3 text-left">
                 <button
                   onClick={() => handleSort('text')}
-                  className="text-xs font-medium text-slate-700 uppercase tracking-wider hover:text-slate-900 flex items-center"
+                  className="text-xs font-medium text-slate-700 dark:text-slate-300 uppercase tracking-wider hover:text-slate-900 dark:hover:text-white flex items-center"
                 >
                   Feedback Text
                   <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -119,7 +119,7 @@ const FeedbackTable = React.memo(({ feedbackData }) => {
               <th className="px-6 py-3 text-left">
                 <button
                   onClick={() => handleSort('confidence')}
-                  className="text-xs font-medium text-slate-700 uppercase tracking-wider hover:text-slate-900 flex items-center"
+                  className="text-xs font-medium text-slate-700 dark:text-slate-300 uppercase tracking-wider hover:text-slate-900 dark:hover:text-white flex items-center"
                 >
                   Confidence
                   <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -130,7 +130,7 @@ const FeedbackTable = React.memo(({ feedbackData }) => {
               <th className="px-6 py-3 text-left">
                 <button
                   onClick={() => handleSort('timestamp')}
-                  className="text-xs font-medium text-slate-700 uppercase tracking-wider hover:text-slate-900 flex items-center"
+                  className="text-xs font-medium text-slate-700 dark:text-slate-300 uppercase tracking-wider hover:text-slate-900 dark:hover:text-white flex items-center"
                 >
                   Date
                   <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -140,11 +140,11 @@ const FeedbackTable = React.memo(({ feedbackData }) => {
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-200">
+          <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
             {sortedData.map((item) => (
               <React.Fragment key={item.id}>
                 <tr 
-                  className="hover:bg-slate-50 cursor-pointer transition-colors duration-150"
+                  className="hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition-colors duration-150"
                   onClick={() => toggleRowExpansion(item.id)}
                   role="button"
                   tabIndex={0}
@@ -171,12 +171,12 @@ const FeedbackTable = React.memo(({ feedbackData }) => {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm text-slate-900">
+                    <div className="text-sm text-slate-900 dark:text-slate-100">
                       <p className="font-medium">{item.truncatedText}</p>
                       {item.highlights.length > 0 && (
                         <div className="mt-1 flex flex-wrap gap-1">
                           {item.highlights.map((highlight, index) => (
-                            <span key={index} className="px-2 py-1 bg-slate-100 text-slate-700 text-xs rounded">
+                            <span key={index} className="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs rounded">
                               {highlight}
                             </span>
                           ))}
@@ -186,16 +186,16 @@ const FeedbackTable = React.memo(({ feedbackData }) => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <div className="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                      <div className="w-16 bg-gray-200 dark:bg-slate-700 rounded-full h-2 mr-2">
                         <div 
                           className="bg-blue-600 h-2 rounded-full"
                           style={{ width: `${item.confidence}%` }}
                         ></div>
                       </div>
-                      <span className="text-sm text-slate-600">{item.confidence}%</span>
+                      <span className="text-sm text-slate-600 dark:text-slate-400">{item.confidence}%</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-400">
                     {item.timestamp}
                   </td>
                 </tr>
@@ -203,15 +203,15 @@ const FeedbackTable = React.memo(({ feedbackData }) => {
                 {/* Expanded row for full text */}
                 {expandedRows.has(item.id) && (
                   <tr>
-                    <td colSpan="5" className="px-6 py-4 bg-slate-50">
+                    <td colSpan="5" className="px-6 py-4 bg-slate-50 dark:bg-slate-900">
                       <div className="space-y-3">
                         <div>
-                          <h4 className="text-sm font-semibold text-slate-900 mb-2">Full Feedback:</h4>
-                          <p className="text-sm text-slate-700 bg-white p-3 rounded border border-slate-200">
+                          <h4 className="text-sm font-semibold text-slate-900 dark:text-white mb-2">Full Feedback:</h4>
+                          <p className="text-sm text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 p-3 rounded border border-slate-200 dark:border-slate-700">
                             {item.text}
                           </p>
                         </div>
-                        <div className="flex items-center justify-between text-xs text-slate-500">
+                        <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
                           <span>ID: {item.id}</span>
                           <span>Click to collapse</span>
                         </div>
@@ -226,13 +226,13 @@ const FeedbackTable = React.memo(({ feedbackData }) => {
       </div>
 
       {/* Table Footer */}
-      <div className="px-6 py-4 border-t border-slate-200 bg-slate-50">
+      <div className="px-6 py-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
         <div className="flex items-center justify-between">
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-slate-600 dark:text-slate-400">
             Showing {feedbackData.length} feedback items
           </p>
           <div className="flex items-center space-x-4">
-            <span className="text-sm text-slate-600">
+            <span className="text-sm text-slate-600 dark:text-slate-400">
               Sorted by {sortConfig.key} ({sortConfig.direction})
             </span>
           </div>

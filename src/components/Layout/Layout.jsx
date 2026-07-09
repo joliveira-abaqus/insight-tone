@@ -8,7 +8,7 @@ import Header from './Header.jsx';
  */
 const Layout = ({ children }) => {
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
       {/* Sidebar */}
       <aside className="sidebar hidden md:block">
         <div className="mb-8">

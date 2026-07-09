@@ -49,7 +49,7 @@ const SentimentMetrics = React.memo(({ sentimentData }) => {
       {/* Overall Sentiment Card */}
       <div className="metric-card hover:shadow-lg transition-shadow duration-300">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-slate-900">Overall Sentiment</h3>
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Overall Sentiment</h3>
           <div className={`px-3 py-1 rounded-full border ${getSentimentColor(sentimentData.overall)} animate-pulse`}>
             <span className="text-sm font-medium capitalize">{sentimentData.overall}</span>
           </div>
@@ -61,10 +61,10 @@ const SentimentMetrics = React.memo(({ sentimentData }) => {
         </div>
         
         <div className="text-center">
-          <p className="text-sm text-slate-600 mb-2">Confidence Score</p>
+          <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">Confidence Score</p>
           <div className="flex items-center justify-center space-x-2">
-            <p className="text-3xl font-bold text-slate-900">{sentimentData.confidence}%</p>
-            <div className="w-16 bg-gray-200 rounded-full h-2">
+            <p className="text-3xl font-bold text-slate-900 dark:text-white">{sentimentData.confidence}%</p>
+            <div className="w-16 bg-gray-200 dark:bg-slate-700 rounded-full h-2">
               <div 
                 className="bg-blue-600 h-2 rounded-full transition-all duration-500"
                 style={{ width: `${sentimentData.confidence}%` }}
@@ -76,15 +76,15 @@ const SentimentMetrics = React.memo(({ sentimentData }) => {
 
       {/* Sentiment Breakdown */}
       <div className="metric-card">
-        <h3 className="text-lg font-semibold text-slate-900 mb-4">Sentiment Breakdown</h3>
+        <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Sentiment Breakdown</h3>
         
         <div className="space-y-4">
           <div>
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium text-green-700">Positive</span>
-              <span className="text-sm text-slate-600">{sentimentData.breakdown.positive}%</span>
+              <span className="text-sm font-medium text-green-700 dark:text-green-400">Positive</span>
+              <span className="text-sm text-slate-600 dark:text-slate-400">{sentimentData.breakdown.positive}%</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-3">
+            <div className="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-3">
               <div 
                 className={`${getBarColor('positive')} h-3 rounded-full transition-all duration-500`}
                 style={{ width: `${sentimentData.breakdown.positive}%` }}
@@ -94,10 +94,10 @@ const SentimentMetrics = React.memo(({ sentimentData }) => {
 
           <div>
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium text-gray-700">Neutral</span>
-              <span className="text-sm text-slate-600">{sentimentData.breakdown.neutral}%</span>
+              <span className="text-sm font-medium text-gray-700 dark:text-slate-300">Neutral</span>
+              <span className="text-sm text-slate-600 dark:text-slate-400">{sentimentData.breakdown.neutral}%</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-3">
+            <div className="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-3">
               <div 
                 className={`${getBarColor('neutral')} h-3 rounded-full transition-all duration-500`}
                 style={{ width: `${sentimentData.breakdown.neutral}%` }}
@@ -107,10 +107,10 @@ const SentimentMetrics = React.memo(({ sentimentData }) => {
 
           <div>
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium text-red-700">Negative</span>
-              <span className="text-sm text-slate-600">{sentimentData.breakdown.negative}%</span>
+              <span className="text-sm font-medium text-red-700 dark:text-red-400">Negative</span>
+              <span className="text-sm text-slate-600 dark:text-slate-400">{sentimentData.breakdown.negative}%</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-3">
+            <div className="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-3">
               <div 
                 className={`${getBarColor('negative')} h-3 rounded-full transition-all duration-500`}
                 style={{ width: `${sentimentData.breakdown.negative}%` }}
@@ -120,9 +120,9 @@ const SentimentMetrics = React.memo(({ sentimentData }) => {
         </div>
 
         {/* Key Insights */}
-        <div className="mt-6 pt-4 border-t border-slate-200">
-          <p className="text-sm text-slate-600 mb-2">Key Insights:</p>
-          <ul className="text-sm text-slate-700 space-y-1">
+        <div className="mt-6 pt-4 border-t border-slate-200 dark:border-slate-700">
+          <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">Key Insights:</p>
+          <ul className="text-sm text-slate-700 dark:text-slate-300 space-y-1">
             {sentimentData.breakdown.positive > 60 && (
               <li className="flex items-center">
                 <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -1,4 +1,5 @@
 import React from 'react';
+import ThemeToggle from '../ThemeToggle/ThemeToggle.jsx';
 
 /**
  * Header Component
@@ -6,7 +7,7 @@ import React from 'react';
  */
 const Header = () => {
   return (
-    <header className="bg-white border-b border-slate-200 px-6 py-4">
+    <header className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 px-6 py-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
@@ -16,13 +17,15 @@ const Header = () => {
               </svg>
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-slate-900">Feedback Analysis</h2>
-              <p className="text-sm text-slate-500">Analyze user sentiment and categorize issues</p>
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Feedback Analysis</h2>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Analyze user sentiment and categorize issues</p>
             </div>
           </div>
         </div>
         
         <div className="flex items-center space-x-4">
+          <ThemeToggle />
+
           <button className="btn-secondary">
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -32,11 +35,11 @@ const Header = () => {
           
           <div className="flex items-center space-x-3">
             <div className="text-right">
-              <p className="text-sm font-medium text-slate-900">Product Manager</p>
-              <p className="text-xs text-slate-500">admin@insighttone.com</p>
+              <p className="text-sm font-medium text-slate-900 dark:text-white">Product Manager</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">admin@insighttone.com</p>
             </div>
-            <div className="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center">
-              <svg className="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-10 h-10 bg-slate-200 dark:bg-slate-700 rounded-full flex items-center justify-center">
+              <svg className="w-6 h-6 text-slate-600 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
             </div>
