@@ -28,7 +28,7 @@ description: "Task list for Dark Mode Toggle implementation"
 
 **Purpose**: Enable Tailwind class-based dark mode.
 
-- [ ] T001 Enable class-based dark mode by adding `darkMode: 'class'` to the config export in `tailwind.config.js`
+- [X] T001 Enable class-based dark mode by adding `darkMode: 'class'` to the config export in `tailwind.config.js`
 
 ---
 
@@ -38,9 +38,9 @@ description: "Task list for Dark Mode Toggle implementation"
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T002 Create `src/context/ThemeContext.jsx` exporting `ThemeContext` and `ThemeProvider`; hold in-memory `theme` state (`"light" | "dark"`, default `"light"`) and expose `toggleTheme()` and `setTheme(value)`; apply/remove the `dark` class on `document.documentElement` via an effect whenever `theme` changes (per `contracts/theme-context.md` §1–2). Persistence is added later in US3.
-- [ ] T003 [P] Create `src/hooks/useTheme.js` returning the `ThemeContext` value and throwing a clear error when used outside `ThemeProvider` (per `contracts/theme-context.md` §3)
-- [ ] T004 Wrap the application tree in `<ThemeProvider>` in `src/App.jsx` (above `ErrorBoundary`/`Layout`)
+- [X] T002 Create `src/context/ThemeContext.jsx` exporting `ThemeContext` and `ThemeProvider`; hold in-memory `theme` state (`"light" | "dark"`, default `"light"`) and expose `toggleTheme()` and `setTheme(value)`; apply/remove the `dark` class on `document.documentElement` via an effect whenever `theme` changes (per `contracts/theme-context.md` §1–2). Persistence is added later in US3.
+- [X] T003 [P] Create `src/hooks/useTheme.js` returning the `ThemeContext` value and throwing a clear error when used outside `ThemeProvider` (per `contracts/theme-context.md` §3)
+- [X] T004 Wrap the application tree in `<ThemeProvider>` in `src/App.jsx` (above `ErrorBoundary`/`Layout`)
 
 **Checkpoint**: Theme state is globally available and toggling updates the `<html>` class.
 
@@ -52,9 +52,9 @@ description: "Task list for Dark Mode Toggle implementation"
 
 **Independent Test**: Open the main screen, activate the toggle, and confirm the header + feedback form switch light↔dark; verify the control shows the current mode. (quickstart Scenario A)
 
-- [ ] T005 [P] [US1] Create `src/components/ThemeToggle/ThemeToggle.jsx`: a `<button>` using Lucide `Moon`/`Sun` icons, `aria-label` "Switch to dark mode"/"Switch to light mode", `aria-pressed={theme === "dark"}`, visible focus ring matching existing `.btn-*` styles, calling `toggleTheme()` from `useTheme()` (per `contracts/theme-context.md` §4)
-- [ ] T006 [US1] Render `<ThemeToggle />` in the header actions area of `src/components/Layout/Header.jsx` (next to the Export button) so it is visible on the main screen
-- [ ] T007 [US1] Add `dark:` variant utilities to the main-screen surfaces in `src/components/Layout/Layout.jsx`, `src/components/Layout/Header.jsx`, and `src/components/FeedbackForm/FeedbackForm.jsx` (backgrounds, borders, text, icons) so the initial screen renders correctly in dark mode with readable contrast
+- [X] T005 [P] [US1] Create `src/components/ThemeToggle/ThemeToggle.jsx`: a `<button>` using Lucide `Moon`/`Sun` icons, `aria-label` "Switch to dark mode"/"Switch to light mode", `aria-pressed={theme === "dark"}`, visible focus ring matching existing `.btn-*` styles, calling `toggleTheme()` from `useTheme()` (per `contracts/theme-context.md` §4)
+- [X] T006 [US1] Render `<ThemeToggle />` in the header actions area of `src/components/Layout/Header.jsx` (next to the Export button) so it is visible on the main screen
+- [X] T007 [US1] Add `dark:` variant utilities to the main-screen surfaces in `src/components/Layout/Layout.jsx`, `src/components/Layout/Header.jsx`, and `src/components/FeedbackForm/FeedbackForm.jsx` (backgrounds, borders, text, icons) so the initial screen renders correctly in dark mode with readable contrast
 
 **Checkpoint**: On the main screen the user can toggle dark/light and the form + header + layout render correctly in both themes (MVP).
 
@@ -66,11 +66,11 @@ description: "Task list for Dark Mode Toggle implementation"
 
 **Independent Test**: With dark mode active, submit feedback and move through the loading state and results dashboard; confirm every view renders in dark theme. (quickstart Scenario B)
 
-- [ ] T008 [US2] Add `dark:` variants to the shared component classes in `src/styles/globals.css` (`body`, `.card`, `.card-header`, `.card-body`, `.btn-secondary`, `.metric-card`, `.metric-value`, `.metric-label`) reusing the existing slate/zinc palette
-- [ ] T009 [P] [US2] Add `dark:` variants to `src/components/LoadingSpinner/LoadingSpinner.jsx` and the loading view markup in `src/App.jsx`
-- [ ] T010 [P] [US2] Add `dark:` variants to `src/components/ResultsDashboard/ResultsDashboard.jsx` and `src/components/ResultsDashboard/SentimentMetrics.jsx`
-- [ ] T011 [P] [US2] Add `dark:` variants to `src/components/ResultsDashboard/CategoryChart.jsx` (Tailwind-simulated chart bars/labels remain legible in dark)
-- [ ] T012 [P] [US2] Add `dark:` variants to `src/components/ResultsDashboard/FeedbackTable.jsx` (header, rows, borders, status badges)
+- [X] T008 [US2] Add `dark:` variants to the shared component classes in `src/styles/globals.css` (`body`, `.card`, `.card-header`, `.card-body`, `.btn-secondary`, `.metric-card`, `.metric-value`, `.metric-label`) reusing the existing slate/zinc palette
+- [X] T009 [P] [US2] Add `dark:` variants to `src/components/LoadingSpinner/LoadingSpinner.jsx` and the loading view markup in `src/App.jsx`
+- [X] T010 [P] [US2] Add `dark:` variants to `src/components/ResultsDashboard/ResultsDashboard.jsx` and `src/components/ResultsDashboard/SentimentMetrics.jsx`
+- [X] T011 [P] [US2] Add `dark:` variants to `src/components/ResultsDashboard/CategoryChart.jsx` (Tailwind-simulated chart bars/labels remain legible in dark)
+- [X] T012 [P] [US2] Add `dark:` variants to `src/components/ResultsDashboard/FeedbackTable.jsx` (header, rows, borders, status badges)
 
 **Checkpoint**: All primary screens (form, loading, dashboard) render correctly in both themes.
 
@@ -82,9 +82,9 @@ description: "Task list for Dark Mode Toggle implementation"
 
 **Independent Test**: Select dark mode, reload/reopen; app reopens in dark mode without a light flash; clearing the stored value defaults to light. (quickstart Scenarios C–E)
 
-- [ ] T013 [US3] Extend `src/context/ThemeContext.jsx` to initialize `theme` from `localStorage["insight-tone-theme"]` and write the value on every change; validate the read (missing/invalid → default `"light"`) per `data-model.md`
-- [ ] T014 [US3] Add a small inline pre-paint `<script>` in the `<head>` of `index.html` that reads `localStorage["insight-tone-theme"]` and sets the `dark` class on `document.documentElement` before React mounts (FOUC prevention, `contracts/theme-context.md` §6)
-- [ ] T015 [P] [US3] Verify graceful fallback for missing/invalid stored values (quickstart Scenarios D–E); ensure no invalid value is ever written back
+- [X] T013 [US3] Extend `src/context/ThemeContext.jsx` to initialize `theme` from `localStorage["insight-tone-theme"]` and write the value on every change; validate the read (missing/invalid → default `"light"`) per `data-model.md`
+- [X] T014 [US3] Add a small inline pre-paint `<script>` in the `<head>` of `index.html` that reads `localStorage["insight-tone-theme"]` and sets the `dark` class on `document.documentElement` before React mounts (FOUC prevention, `contracts/theme-context.md` §6)
+- [X] T015 [P] [US3] Verify graceful fallback for missing/invalid stored values (quickstart Scenarios D–E); ensure no invalid value is ever written back
 
 **Checkpoint**: Theme preference persists across sessions with no flash and safe fallbacks.
 
@@ -92,8 +92,8 @@ description: "Task list for Dark Mode Toggle implementation"
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-- [ ] T016 Run `npm run lint` and fix any issues introduced by the new/modified files
-- [ ] T017 Execute all `quickstart.md` validation scenarios (A–F) and confirm contrast/accessibility across both themes
+- [X] T016 Run `npm run lint` and fix any issues introduced by the new/modified files
+- [X] T017 Execute all `quickstart.md` validation scenarios (A–F) and confirm contrast/accessibility across both themes
 
 ---
 
