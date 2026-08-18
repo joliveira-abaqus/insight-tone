@@ -1,4 +1,4 @@
-import { createContext, useCallback, useEffect, useState } from 'react';
+import { createContext, useCallback, useLayoutEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 /**
@@ -38,7 +38,7 @@ const applyThemeClass = (theme) => {
 export const ThemeProvider = ({ children }) => {
   const [theme, setThemeState] = useState(readStoredTheme);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     applyThemeClass(theme);
     try {
       window.localStorage.setItem(THEME_STORAGE_KEY, theme);
