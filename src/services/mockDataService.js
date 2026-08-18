@@ -15,6 +15,34 @@ const NEGATIVE_WORDS = [
   'lento', 'lenta', 'dificil', 'confuso', 'confusa', 'erro', 'falha', 'problema', 'demora', 'inutil',
 ];
 
+// Palavras-chave bilíngues por categoria de problema.
+const CATEGORY_KEYWORDS = {
+  [ISSUE_CATEGORIES.UI_UX]: ['interface', 'ui', 'design', 'layout', 'tela', 'usabilidade'],
+  [ISSUE_CATEGORIES.PERFORMANCE]: ['slow', 'performance', 'speed', 'fast', 'lento', 'rapido', 'desempenho', 'velocidade'],
+  [ISSUE_CATEGORIES.FEATURES]: ['feature', 'functionality', 'add', 'request', 'funcionalidade', 'recurso', 'adicionar'],
+  [ISSUE_CATEGORIES.BUGS]: ['bug', 'crash', 'error', 'broken', 'erro', 'falha', 'travando', 'quebrado'],
+};
+
+// Sufixos de flexão aceitos ao casar um termo (plurais e conjugações comuns).
+const TERM_SUFFIXES = '(s|es|ed|d|ing|a|o|as|os)?';
+
+/**
+ * Cria um comparador de termos para o texto informado
+ * O casamento respeita limites de palavra, evitando que termos curtos como
+ * "bom" ou "lento" casem dentro de palavras como "bombing" ou "talento".
+ * Termos com mais de uma palavra continuam sendo buscados como substring.
+ * @param {string} text - O texto onde os termos serão buscados
+ * @returns {Function} - Função que recebe um termo e retorna se ele ocorre no texto
+ */
+const createTermMatcher = (text) => {
+  const normalized = normalizeText(text);
+
+  return (term) => {
+    if (term.includes(' ')) return normalized.includes(term);
+    return new RegExp(`\\b${term}${TERM_SUFFIXES}\\b`).test(normalized);
+  };
+};
+
 /**
  * Ajusta o breakdown para que os percentuais fiquem sempre entre 0 e 100 e somem o total
  * @param {number} positive - Percentual positivo bruto
@@ -47,12 +75,12 @@ const balanceBreakdown = (positive, negative, total = 100, minNeutral = 5) => {
  */
 export const generateSentimentAnalysis = (text) => {
   // Simple mock logic based on text content
-  const lowerText = normalizeText(text);
+  const matchesTerm = createTermMatcher(text);
   let sentiment = SENTIMENT_CATEGORIES.NEUTRAL;
   let confidence = 0.7;
   
-  const positiveCount = POSITIVE_WORDS.filter(word => lowerText.includes(word)).length;
-  const negativeCount = NEGATIVE_WORDS.filter(word => lowerText.includes(word)).length;
+  const positiveCount = POSITIVE_WORDS.filter(matchesTerm).length;
+  const negativeCount = NEGATIVE_WORDS.filter(matchesTerm).length;
   
   if (positiveCount > negativeCount) {
     sentiment = SENTIMENT_CATEGORIES.POSITIVE;
@@ -82,11 +110,11 @@ export const generateSentimentAnalysis = (text) => {
   
   // Extract key phrases (simple mock implementation)
   const keyPhrases = [];
-  if (lowerText.includes('user interface') || lowerText.includes('interface do usuario')) keyPhrases.push('user interface');
-  if (lowerText.includes('performance') || lowerText.includes('desempenho')) keyPhrases.push('performance');
-  if (lowerText.includes('feature') || lowerText.includes('funcionalidade')) keyPhrases.push('feature');
-  if (lowerText.includes('bug') || lowerText.includes('erro')) keyPhrases.push('bug');
-  if (lowerText.includes('easy to use') || lowerText.includes('facil de usar')) keyPhrases.push('easy to use');
+  if (matchesTerm('user interface') || matchesTerm('interface do usuario')) keyPhrases.push('user interface');
+  if (matchesTerm('performance') || matchesTerm('desempenho')) keyPhrases.push('performance');
+  if (matchesTerm('feature') || matchesTerm('funcionalidade')) keyPhrases.push('feature');
+  if (matchesTerm('bug') || matchesTerm('erro')) keyPhrases.push('bug');
+  if (matchesTerm('easy to use') || matchesTerm('facil de usar')) keyPhrases.push('easy to use');
   
   return {
     overall: sentiment,
@@ -102,7 +130,7 @@ export const generateSentimentAnalysis = (text) => {
  * @returns {Array} - Array of issue categories
  */
 export const generateIssueCategories = (text) => {
-  const lowerText = normalizeText(text);
+  const matchesTerm = createTermMatcher(text);
   
   // Initialize all categories
   const categories = [
@@ -141,18 +169,11 @@ export const generateIssueCategories = (text) => {
   ];
   
   // Categorize based on keywords
-  if (lowerText.includes('interface') || lowerText.includes('ui') || lowerText.includes('design') || lowerText.includes('layout') || lowerText.includes('tela') || lowerText.includes('usabilidade')) {
-    categories[0].count = 1;
-  }
-  if (lowerText.includes('slow') || lowerText.includes('performance') || lowerText.includes('speed') || lowerText.includes('fast') || lowerText.includes('lento') || lowerText.includes('rapido') || lowerText.includes('desempenho') || lowerText.includes('velocidade')) {
-    categories[1].count = 1;
-  }
-  if (lowerText.includes('feature') || lowerText.includes('functionality') || lowerText.includes('add') || lowerText.includes('request') || lowerText.includes('funcionalidade') || lowerText.includes('recurso') || lowerText.includes('adicionar')) {
-    categories[2].count = 1;
-  }
-  if (lowerText.includes('bug') || lowerText.includes('crash') || lowerText.includes('error') || lowerText.includes('broken') || lowerText.includes('erro') || lowerText.includes('falha') || lowerText.includes('travando') || lowerText.includes('quebrado')) {
-    categories[3].count = 1;
-  }
+  categories.forEach(category => {
+    if (CATEGORY_KEYWORDS[category.id].some(matchesTerm)) {
+      category.count = 1;
+    }
+  });
   
   // If no specific category found, assign to UI/UX by default
   const totalIssues = categories.reduce((sum, cat) => sum + cat.count, 0);
