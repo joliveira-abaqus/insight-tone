@@ -1,5 +1,72 @@
 import { SENTIMENT_CATEGORIES, ISSUE_CATEGORIES, CATEGORY_COLORS } from '../utils/constants.js';
-import { generateId, calculatePercentage } from '../utils/helpers.js';
+import { generateId, calculatePercentage, normalizeText } from '../utils/helpers.js';
+
+// Léxico bilíngue (inglês e português) usado na detecção de sentimento.
+// Os termos são comparados contra o texto normalizado (minúsculas e sem acentos).
+const POSITIVE_WORDS = [
+  'good', 'great', 'excellent', 'love', 'amazing', 'perfect', 'helpful', 'useful', 'intuitive', 'easy',
+  'bom', 'boa', 'otimo', 'otima', 'excelente', 'adorei', 'adoro', 'amei', 'gostei', 'incrivel',
+  'maravilhoso', 'perfeito', 'perfeita', 'intuitivo', 'intuitiva', 'facil', 'agradavel', 'parabens', 'recomendo',
+];
+
+const NEGATIVE_WORDS = [
+  'bad', 'terrible', 'awful', 'hate', 'broken', 'crash', 'slow', 'difficult', 'confusing', 'bug',
+  'ruim', 'pessimo', 'pessima', 'terrivel', 'horrivel', 'odeio', 'detesto', 'quebrado', 'travando', 'travou',
+  'lento', 'lenta', 'dificil', 'confuso', 'confusa', 'erro', 'falha', 'problema', 'demora', 'inutil',
+];
+
+// Palavras-chave bilíngues por categoria de problema.
+const CATEGORY_KEYWORDS = {
+  [ISSUE_CATEGORIES.UI_UX]: ['interface', 'ui', 'design', 'layout', 'tela', 'usabilidade'],
+  [ISSUE_CATEGORIES.PERFORMANCE]: ['slow', 'performance', 'speed', 'fast', 'lento', 'rapido', 'desempenho', 'velocidade'],
+  [ISSUE_CATEGORIES.FEATURES]: ['feature', 'functionality', 'add', 'request', 'funcionalidade', 'recurso', 'adicionar'],
+  [ISSUE_CATEGORIES.BUGS]: ['bug', 'crash', 'error', 'broken', 'erro', 'falha', 'travando', 'quebrado'],
+};
+
+// Sufixos de flexão aceitos ao casar um termo (plurais e conjugações comuns).
+const TERM_SUFFIXES = '(s|es|ed|d|ing|a|o|as|os)?';
+
+/**
+ * Cria um comparador de termos para o texto informado
+ * O casamento respeita limites de palavra, evitando que termos curtos como
+ * "bom" ou "lento" casem dentro de palavras como "bombing" ou "talento".
+ * Termos com mais de uma palavra continuam sendo buscados como substring.
+ * @param {string} text - O texto onde os termos serão buscados
+ * @returns {Function} - Função que recebe um termo e retorna se ele ocorre no texto
+ */
+const createTermMatcher = (text) => {
+  const normalized = normalizeText(text);
+
+  return (term) => {
+    if (term.includes(' ')) return normalized.includes(term);
+    return new RegExp(`\\b${term}${TERM_SUFFIXES}\\b`).test(normalized);
+  };
+};
+
+/**
+ * Ajusta o breakdown para que os percentuais fiquem sempre entre 0 e 100 e somem o total
+ * @param {number} positive - Percentual positivo bruto
+ * @param {number} negative - Percentual negativo bruto
+ * @param {number} total - Total esperado da soma
+ * @param {number} minNeutral - Percentual mínimo reservado para neutro
+ * @returns {Object} - Breakdown balanceado
+ */
+const balanceBreakdown = (positive, negative, total = 100, minNeutral = 5) => {
+  const maxScored = total - minNeutral;
+  const scored = positive + negative;
+
+  if (scored > maxScored) {
+    const factor = maxScored / scored;
+    positive = Math.round(positive * factor);
+    negative = Math.round(negative * factor);
+  }
+
+  return {
+    positive: Math.round(positive),
+    negative: Math.round(negative),
+    neutral: Math.max(0, total - Math.round(positive) - Math.round(negative)),
+  };
+};
 
 /**
  * Generates mock sentiment analysis based on feedback text
@@ -8,16 +75,12 @@ import { generateId, calculatePercentage } from '../utils/helpers.js';
  */
 export const generateSentimentAnalysis = (text) => {
   // Simple mock logic based on text content
-  const lowerText = text.toLowerCase();
+  const matchesTerm = createTermMatcher(text);
   let sentiment = SENTIMENT_CATEGORIES.NEUTRAL;
   let confidence = 0.7;
   
-  // Basic sentiment detection based on keywords
-  const positiveWords = ['good', 'great', 'excellent', 'love', 'amazing', 'perfect', 'helpful', 'useful', 'intuitive', 'easy'];
-  const negativeWords = ['bad', 'terrible', 'awful', 'hate', 'broken', 'crash', 'slow', 'difficult', 'confusing', 'bug'];
-  
-  const positiveCount = positiveWords.filter(word => lowerText.includes(word)).length;
-  const negativeCount = negativeWords.filter(word => lowerText.includes(word)).length;
+  const positiveCount = POSITIVE_WORDS.filter(matchesTerm).length;
+  const negativeCount = NEGATIVE_WORDS.filter(matchesTerm).length;
   
   if (positiveCount > negativeCount) {
     sentiment = SENTIMENT_CATEGORIES.POSITIVE;
@@ -36,29 +99,27 @@ export const generateSentimentAnalysis = (text) => {
   if (sentiment === SENTIMENT_CATEGORIES.POSITIVE) {
     positive = 50 + Math.min(positiveCount * 10, 30);
     negative = Math.max(10, 30 - negativeCount * 5);
-    neutral = total - positive - negative;
   } else if (sentiment === SENTIMENT_CATEGORIES.NEGATIVE) {
     negative = 50 + Math.min(negativeCount * 10, 30);
     positive = Math.max(10, 30 - positiveCount * 5);
-    neutral = total - positive - negative;
   }
+  
+  const breakdown = sentiment === SENTIMENT_CATEGORIES.NEUTRAL
+    ? { positive, negative, neutral }
+    : balanceBreakdown(positive, negative, total);
   
   // Extract key phrases (simple mock implementation)
   const keyPhrases = [];
-  if (lowerText.includes('user interface')) keyPhrases.push('user interface');
-  if (lowerText.includes('performance')) keyPhrases.push('performance');
-  if (lowerText.includes('feature')) keyPhrases.push('feature');
-  if (lowerText.includes('bug')) keyPhrases.push('bug');
-  if (lowerText.includes('easy to use')) keyPhrases.push('easy to use');
+  if (matchesTerm('user interface') || matchesTerm('interface do usuario')) keyPhrases.push('user interface');
+  if (matchesTerm('performance') || matchesTerm('desempenho')) keyPhrases.push('performance');
+  if (matchesTerm('feature') || matchesTerm('funcionalidade')) keyPhrases.push('feature');
+  if (matchesTerm('bug') || matchesTerm('erro')) keyPhrases.push('bug');
+  if (matchesTerm('easy to use') || matchesTerm('facil de usar')) keyPhrases.push('easy to use');
   
   return {
     overall: sentiment,
     confidence: Math.min(confidence, 0.95),
-    breakdown: {
-      positive: Math.round(positive),
-      negative: Math.round(negative),
-      neutral: Math.round(neutral),
-    },
+    breakdown,
     keyPhrases: keyPhrases.length > 0 ? keyPhrases : ['general feedback'],
   };
 };
@@ -69,7 +130,7 @@ export const generateSentimentAnalysis = (text) => {
  * @returns {Array} - Array of issue categories
  */
 export const generateIssueCategories = (text) => {
-  const lowerText = text.toLowerCase();
+  const matchesTerm = createTermMatcher(text);
   
   // Initialize all categories
   const categories = [
@@ -108,18 +169,11 @@ export const generateIssueCategories = (text) => {
   ];
   
   // Categorize based on keywords
-  if (lowerText.includes('interface') || lowerText.includes('ui') || lowerText.includes('design') || lowerText.includes('layout')) {
-    categories[0].count = 1;
-  }
-  if (lowerText.includes('slow') || lowerText.includes('performance') || lowerText.includes('speed') || lowerText.includes('fast')) {
-    categories[1].count = 1;
-  }
-  if (lowerText.includes('feature') || lowerText.includes('functionality') || lowerText.includes('add') || lowerText.includes('request')) {
-    categories[2].count = 1;
-  }
-  if (lowerText.includes('bug') || lowerText.includes('crash') || lowerText.includes('error') || lowerText.includes('broken')) {
-    categories[3].count = 1;
-  }
+  categories.forEach(category => {
+    if (CATEGORY_KEYWORDS[category.id].some(matchesTerm)) {
+      category.count = 1;
+    }
+  });
   
   // If no specific category found, assign to UI/UX by default
   const totalIssues = categories.reduce((sum, cat) => sum + cat.count, 0);
