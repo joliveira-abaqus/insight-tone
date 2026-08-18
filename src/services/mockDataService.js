@@ -1,5 +1,44 @@
 import { SENTIMENT_CATEGORIES, ISSUE_CATEGORIES, CATEGORY_COLORS } from '../utils/constants.js';
-import { generateId, calculatePercentage } from '../utils/helpers.js';
+import { generateId, calculatePercentage, normalizeText } from '../utils/helpers.js';
+
+// Léxico bilíngue (inglês e português) usado na detecção de sentimento.
+// Os termos são comparados contra o texto normalizado (minúsculas e sem acentos).
+const POSITIVE_WORDS = [
+  'good', 'great', 'excellent', 'love', 'amazing', 'perfect', 'helpful', 'useful', 'intuitive', 'easy',
+  'bom', 'boa', 'otimo', 'otima', 'excelente', 'adorei', 'adoro', 'amei', 'gostei', 'incrivel',
+  'maravilhoso', 'perfeito', 'perfeita', 'intuitivo', 'intuitiva', 'facil', 'agradavel', 'parabens', 'recomendo',
+];
+
+const NEGATIVE_WORDS = [
+  'bad', 'terrible', 'awful', 'hate', 'broken', 'crash', 'slow', 'difficult', 'confusing', 'bug',
+  'ruim', 'pessimo', 'pessima', 'terrivel', 'horrivel', 'odeio', 'detesto', 'quebrado', 'travando', 'travou',
+  'lento', 'lenta', 'dificil', 'confuso', 'confusa', 'erro', 'falha', 'problema', 'demora', 'inutil',
+];
+
+/**
+ * Ajusta o breakdown para que os percentuais fiquem sempre entre 0 e 100 e somem o total
+ * @param {number} positive - Percentual positivo bruto
+ * @param {number} negative - Percentual negativo bruto
+ * @param {number} total - Total esperado da soma
+ * @param {number} minNeutral - Percentual mínimo reservado para neutro
+ * @returns {Object} - Breakdown balanceado
+ */
+const balanceBreakdown = (positive, negative, total = 100, minNeutral = 5) => {
+  const maxScored = total - minNeutral;
+  const scored = positive + negative;
+
+  if (scored > maxScored) {
+    const factor = maxScored / scored;
+    positive = Math.round(positive * factor);
+    negative = Math.round(negative * factor);
+  }
+
+  return {
+    positive: Math.round(positive),
+    negative: Math.round(negative),
+    neutral: Math.max(0, total - Math.round(positive) - Math.round(negative)),
+  };
+};
 
 /**
  * Generates mock sentiment analysis based on feedback text
@@ -8,16 +47,12 @@ import { generateId, calculatePercentage } from '../utils/helpers.js';
  */
 export const generateSentimentAnalysis = (text) => {
   // Simple mock logic based on text content
-  const lowerText = text.toLowerCase();
+  const lowerText = normalizeText(text);
   let sentiment = SENTIMENT_CATEGORIES.NEUTRAL;
   let confidence = 0.7;
   
-  // Basic sentiment detection based on keywords
-  const positiveWords = ['good', 'great', 'excellent', 'love', 'amazing', 'perfect', 'helpful', 'useful', 'intuitive', 'easy'];
-  const negativeWords = ['bad', 'terrible', 'awful', 'hate', 'broken', 'crash', 'slow', 'difficult', 'confusing', 'bug'];
-  
-  const positiveCount = positiveWords.filter(word => lowerText.includes(word)).length;
-  const negativeCount = negativeWords.filter(word => lowerText.includes(word)).length;
+  const positiveCount = POSITIVE_WORDS.filter(word => lowerText.includes(word)).length;
+  const negativeCount = NEGATIVE_WORDS.filter(word => lowerText.includes(word)).length;
   
   if (positiveCount > negativeCount) {
     sentiment = SENTIMENT_CATEGORIES.POSITIVE;
@@ -36,29 +71,27 @@ export const generateSentimentAnalysis = (text) => {
   if (sentiment === SENTIMENT_CATEGORIES.POSITIVE) {
     positive = 50 + Math.min(positiveCount * 10, 30);
     negative = Math.max(10, 30 - negativeCount * 5);
-    neutral = total - positive - negative;
   } else if (sentiment === SENTIMENT_CATEGORIES.NEGATIVE) {
     negative = 50 + Math.min(negativeCount * 10, 30);
     positive = Math.max(10, 30 - positiveCount * 5);
-    neutral = total - positive - negative;
   }
+  
+  const breakdown = sentiment === SENTIMENT_CATEGORIES.NEUTRAL
+    ? { positive, negative, neutral }
+    : balanceBreakdown(positive, negative, total);
   
   // Extract key phrases (simple mock implementation)
   const keyPhrases = [];
-  if (lowerText.includes('user interface')) keyPhrases.push('user interface');
-  if (lowerText.includes('performance')) keyPhrases.push('performance');
-  if (lowerText.includes('feature')) keyPhrases.push('feature');
-  if (lowerText.includes('bug')) keyPhrases.push('bug');
-  if (lowerText.includes('easy to use')) keyPhrases.push('easy to use');
+  if (lowerText.includes('user interface') || lowerText.includes('interface do usuario')) keyPhrases.push('user interface');
+  if (lowerText.includes('performance') || lowerText.includes('desempenho')) keyPhrases.push('performance');
+  if (lowerText.includes('feature') || lowerText.includes('funcionalidade')) keyPhrases.push('feature');
+  if (lowerText.includes('bug') || lowerText.includes('erro')) keyPhrases.push('bug');
+  if (lowerText.includes('easy to use') || lowerText.includes('facil de usar')) keyPhrases.push('easy to use');
   
   return {
     overall: sentiment,
     confidence: Math.min(confidence, 0.95),
-    breakdown: {
-      positive: Math.round(positive),
-      negative: Math.round(negative),
-      neutral: Math.round(neutral),
-    },
+    breakdown,
     keyPhrases: keyPhrases.length > 0 ? keyPhrases : ['general feedback'],
   };
 };
@@ -69,7 +102,7 @@ export const generateSentimentAnalysis = (text) => {
  * @returns {Array} - Array of issue categories
  */
 export const generateIssueCategories = (text) => {
-  const lowerText = text.toLowerCase();
+  const lowerText = normalizeText(text);
   
   // Initialize all categories
   const categories = [
@@ -108,16 +141,16 @@ export const generateIssueCategories = (text) => {
   ];
   
   // Categorize based on keywords
-  if (lowerText.includes('interface') || lowerText.includes('ui') || lowerText.includes('design') || lowerText.includes('layout')) {
+  if (lowerText.includes('interface') || lowerText.includes('ui') || lowerText.includes('design') || lowerText.includes('layout') || lowerText.includes('tela') || lowerText.includes('usabilidade')) {
     categories[0].count = 1;
   }
-  if (lowerText.includes('slow') || lowerText.includes('performance') || lowerText.includes('speed') || lowerText.includes('fast')) {
+  if (lowerText.includes('slow') || lowerText.includes('performance') || lowerText.includes('speed') || lowerText.includes('fast') || lowerText.includes('lento') || lowerText.includes('rapido') || lowerText.includes('desempenho') || lowerText.includes('velocidade')) {
     categories[1].count = 1;
   }
-  if (lowerText.includes('feature') || lowerText.includes('functionality') || lowerText.includes('add') || lowerText.includes('request')) {
+  if (lowerText.includes('feature') || lowerText.includes('functionality') || lowerText.includes('add') || lowerText.includes('request') || lowerText.includes('funcionalidade') || lowerText.includes('recurso') || lowerText.includes('adicionar')) {
     categories[2].count = 1;
   }
-  if (lowerText.includes('bug') || lowerText.includes('crash') || lowerText.includes('error') || lowerText.includes('broken')) {
+  if (lowerText.includes('bug') || lowerText.includes('crash') || lowerText.includes('error') || lowerText.includes('broken') || lowerText.includes('erro') || lowerText.includes('falha') || lowerText.includes('travando') || lowerText.includes('quebrado')) {
     categories[3].count = 1;
   }
   

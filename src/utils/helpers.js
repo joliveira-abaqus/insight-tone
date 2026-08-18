@@ -67,6 +67,19 @@ export const calculatePercentage = (value, total) => {
 };
 
 /**
+ * Normaliza texto para comparação de palavras-chave: minúsculas e sem acentos
+ * @param {string} text - O texto a normalizar
+ * @returns {string} - Texto em minúsculas e sem diacríticos
+ */
+export const normalizeText = (text) => {
+  if (!text) return '';
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+};
+
+/**
  * Formats timestamp for display
  * @param {Date} date - The date to format
  * @returns {string} - Formatted date string
